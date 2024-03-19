@@ -12,9 +12,37 @@ What next: After all the analysis of the bets is done,
 
 import pandas as pd
 import tabula
-import os
+# import os
 
-df = pd.read_csv('Analise-investimento\Data\\ate_11-03-24.csv')
+df = pd.read_csv('./Data/ate_11-03-24.csv')
+df['Data'] = pd.to_datetime(df['Data'])
+
+
+#------------Investimento mensal------------
+df_invest_mensal = df.set_index('Data').groupby(pd.Grouper(freq='M'))['Invest'].sum().reset_index()
+df_invest_mensal['Ano'] = df_invest_mensal['Data'].dt.year
+df_invest_mensal['Mes'] = df_invest_mensal['Data'].dt.month
+
+
+#------------Valor total de apostas----------
+total_invest = df['Invest'].sum()
+total_invest = '{:,.2f}'.format(total_invest)
+total_retorno = df['Retorno'].sum()
+total_retorno = '{:,.2f}'.format(total_retorno)
+
+
+#------------Retorno mensal--------------
+df_retorno_mensal = df.set_index('Data').groupby(pd.Grouper(freq='M'))['Retorno'].sum().reset_index()
+df_retorno_mensal['Ano'] = df_retorno_mensal['Data'].dt.year
+df_retorno_mensal['Mes'] = df_retorno_mensal['Data'].dt.month
+
+
+
+
+
+
+
+
 
 ''''
 Because take a long time to read and extract all tables (only bets) from a 50 pdf files, I exported all data filtered in to a CSV file.
